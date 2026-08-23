@@ -1,27 +1,19 @@
-import { SiteHeader } from "@/components/site/SiteHeader";
-import { Hero } from "@/components/site/Hero";
-import { Services } from "@/components/site/Services";
-import { HowItWorks } from "@/components/site/HowItWorks";
-import { About } from "@/components/site/About";
-import { Disclaimer } from "@/components/site/Disclaimer";
-import { Booking } from "@/components/site/Booking";
-import { SiteFooter } from "@/components/site/SiteFooter";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
+import Home from "@/pages/Home";
+import AdminLogin from "@/pages/admin/Login";
+import AdminDashboard from "@/pages/admin/Dashboard";
 
 export default function App() {
   return (
-    <>
-      <SiteHeader />
-      <main>
-        <Hero />
-        <Services />
-        <HowItWorks />
-        <About />
-        <Disclaimer />
-        <Booking />
-      </main>
-      <SiteFooter />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/*" element={<AdminDashboard />} />
+      </Routes>
       <Toaster position="top-center" richColors closeButton />
-    </>
+    </BrowserRouter>
   );
 }
