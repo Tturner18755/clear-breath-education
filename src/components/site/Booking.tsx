@@ -24,7 +24,7 @@ export function Booking() {
     preferredTimes: "",
     topic: "",
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({{}});
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (
@@ -55,9 +55,7 @@ export function Booking() {
     setSubmitting(true);
     try {
       await new Promise((r) => setTimeout(r, 900));
-      toast.success(
-        "Request received. You'll get a confirmation email shortly."
-      );
+      toast.success("Request received. You'll get a confirmation email shortly.");
       setForm({ name: "", email: "", preferredTimes: "", topic: "" });
       setErrors({});
     } catch {
@@ -102,69 +100,24 @@ export function Booking() {
                 <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={form.name}
-                      onChange={handleChange}
-                      placeholder="Your full name"
-                      aria-invalid={!!errors.name}
-                    />
-                    {errors.name && (
-                      <p className="text-sm text-destructive">{errors.name}</p>
-                    )}
+                    <Input id="name" name="name" value={form.name} onChange={handleChange} placeholder="Your full name" aria-invalid={!!errors.name} />
+                    {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="you@example.com"
-                      aria-invalid={!!errors.email}
-                    />
-                    {errors.email && (
-                      <p className="text-sm text-destructive">{errors.email}</p>
-                    )}
+                    <Input id="email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" aria-invalid={!!errors.email} />
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="preferredTimes">Preferred times</Label>
-                    <Textarea
-                      id="preferredTimes"
-                      name="preferredTimes"
-                      value={form.preferredTimes}
-                      onChange={handleChange}
-                      placeholder="e.g. Weekday mornings, or specific dates that work for you"
-                      rows={3}
-                      aria-invalid={!!errors.preferredTimes}
-                    />
-                    {errors.preferredTimes && (
-                      <p className="text-sm text-destructive">
-                        {errors.preferredTimes}
-                      </p>
-                    )}
+                    <Textarea id="preferredTimes" name="preferredTimes" value={form.preferredTimes} onChange={handleChange} placeholder="e.g. Weekday mornings, or specific dates that work for you" rows={3} aria-invalid={!!errors.preferredTimes} />
+                    {errors.preferredTimes && <p className="text-sm text-destructive">{errors.preferredTimes}</p>}
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="topic">What would you like to discuss?</Label>
-                    <Textarea
-                      id="topic"
-                      name="topic"
-                      value={form.topic}
-                      onChange={handleChange}
-                      placeholder="Equipment type, topics, or questions you'd like covered"
-                      rows={4}
-                      aria-invalid={!!errors.topic}
-                    />
-                    {errors.topic && (
-                      <p className="text-sm text-destructive">{errors.topic}</p>
-                    )}
+                    <Textarea id="topic" name="topic" value={form.topic} onChange={handleChange} placeholder="Equipment type, topics, or questions you'd like covered" rows={4} aria-invalid={!!errors.topic} />
+                    {errors.topic && <p className="text-sm text-destructive">{errors.topic}</p>}
                   </div>
-
                   <Button type="submit" className="w-full" size="lg" disabled={submitting}>
                     {submitting ? "Sending…" : "Send request"}
                   </Button>
@@ -172,7 +125,6 @@ export function Booking() {
               </CardContent>
             </Card>
           )}
-
           {(hasStripe || hasDoxy) && (
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               {hasStripe && (
@@ -187,15 +139,9 @@ export function Booking() {
               )}
             </div>
           )}
-
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Prefer email?{" "}
-            <a
-              href={`mailto:${site.email}`}
-              className="font-medium text-primary underline-offset-4 hover:underline"
-            >
-              {site.email}
-            </a>
+            <a href={`mailto:${site.email}`} className="font-medium text-primary underline-offset-4 hover:underline">{site.email}</a>
           </p>
         </div>
       </div>
