@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { z } from "zod";
+import { supabase, supabaseConfigured } from "@/lib/supabase";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -18,23 +19,14 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export function Booking() {
-  const [form, setForm] = useState<FormData>({
-    name: "",
-    email: "",
-    preferredTimes: "",
-    topic: "",
-  });
+  const [form, setForm] = useState<FormData>({ name: "", email: "", preferredTimes: "", topic: "" });
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormData]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
+    if (errors[name as keyof FormData]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,22 +35,33 @@ export function Booking() {
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof FormData, string>> = {};
       result.error.issues.forEach((err) => {
-        if (err.path[0]) {
-          fieldErrors[err.path[0] as keyof FormData] = err.message;
-        }
+        if (err.path[0]) fieldErrors[err.path[0] as keyof FormData] = err.message;
       });
       setErrors(fieldErrors);
       toast.error("Please fix the highlighted fields.");
       return;
     }
-
     setSubmitting(true);
     try {
-      await new Promise((r) => setTimeout(r, 900));
-      toast.success("Request received. You'll get a confirmation email shortly.");
+      if (supabaseConfigured) {
+        const { error } = await supabase.from("booking_requests").insert({
+          name: result.data.name,
+          email: result.data.email,
+          preferred_times: result.data.preferredTimes,
+          topic: result.data.topic,
+          status: "new",
+          paid: false,
+        });
+        if (error) throw error;
+      } else {
+        await new Promise((r) => setTimeout(r, 600));
+        console.warn("Supabase not configured — booking not persisted");
+      }
+      toast.success("Request received. We'll reply shortly with next steps.");
       setForm({ name: "", email: "", preferredTimes: "", topic: "" });
       setErrors({});
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Something went wrong. Please try again or email us directly.");
     } finally {
       setSubmitting(false);
@@ -73,29 +76,17 @@ export function Booking() {
     <section id="booking" className="scroll-mt-20 py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-heading text-3xl font-bold tracking-tight text-navy sm:text-4xl">
-            Book an education session
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Tell us a bit about what you'd like to learn. We'll confirm a time
-            and send next steps. All sessions are educational coaching only.
-          </p>
+          <h2 className="font-heading text-3xl font-bold tracking-tight text-navy sm:text-4xl">Book an education session</h2>
+          <p className="mt-4 text-lg text-muted-foreground">Tell us a bit about what you'd like to learn. We'll confirm a time and send next steps. All sessions are educational coaching only.</p>
         </div>
-
         <div className="mx-auto mt-12 max-w-xl">
           {hasCalendly ? (
             <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
-              <iframe
-                src={site.calendlyUrl}
-                title="Schedule a session"
-                className="h-[700px] w-full"
-              />
+              <iframe src={site.calendlyUrl} title="Schedule a session" className="h-[700px] w-full" />
             </div>
           ) : (
             <Card className="border-border/80 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-xl">Request a session</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle className="text-xl">Request a session</CardTitle></CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                   <div className="space-y-2">
@@ -118,31 +109,18 @@ export function Booking() {
                     <Textarea id="topic" name="topic" value={form.topic} onChange={handleChange} placeholder="Equipment type, topics, or questions you'd like covered" rows={4} aria-invalid={!!errors.topic} />
                     {errors.topic && <p className="text-sm text-destructive">{errors.topic}</p>}
                   </div>
-                  <Button type="submit" className="w-full" size="lg" disabled={submitting}>
-                    {submitting ? "Sending…" : "Send request"}
-                  </Button>
+                  <Button type="submit" className="w-full" size="lg" disabled={submitting}>{submitting ? "Sending…" : "Send request"}</Button>
                 </form>
               </CardContent>
             </Card>
           )}
           {(hasStripe || hasDoxy) && (
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              {hasStripe && (
-                <a href={site.stripePaymentUrl} target="_blank" rel="noopener noreferrer">
-                  <Button variant="secondary">Pay for session</Button>
-                </a>
-              )}
-              {hasDoxy && (
-                <a href={site.doxyRoomUrl} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline">Join video session</Button>
-                </a>
-              )}
+              {hasStripe && <a href={site.stripePaymentUrl} target="_blank" rel="noopener noreferrer"><Button variant="secondary">Pay for session</Button></a>}
+              {hasDoxy && <a href={site.doxyRoomUrl} target="_blank" rel="noopener noreferrer"><Button variant="outline">Join video session</Button></a>}
             </div>
           )}
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            Prefer email?{" "}
-            <a href={`mailto:${site.email}`} className="font-medium text-primary underline-offset-4 hover:underline">{site.email}</a>
-          </p>
+          <p className="mt-6 text-center text-sm text-muted-foreground">Prefer email? <a href={`mailto:${site.email}`} className="font-medium text-primary underline-offset-4 hover:underline">{site.email}</a></p>
         </div>
       </div>
     </section>
