@@ -34,7 +34,7 @@ export function Hero() {
           <div className="overflow-hidden rounded-2xl shadow-xl shadow-primary/10 ring-1 ring-border/50">
             <img
               src="/hero-therapist.jpg"
-              alt="Respiratory therapist teaching a patient over a video call in warm natural light"
+              alt="Educator in scrubs teaching an older adult over a video call about respiratory care"
               className="aspect-[4/3] w-full object-cover"
               width={800}
               height={600}
