@@ -1,21 +1,21 @@
 const steps = [
   {
     number: "1",
-    title: "Book a time",
+    title: "Book and pay in one place",
     description:
-      "Pick a convenient slot and share a brief note about what you'd like to discuss so the session can be focused.",
+      "Choose a 30- or 60-minute education session or a session pack on Vagaro. You pick the time and pay there — no separate invoice.",
   },
   {
     number: "2",
-    title: "Pay securely before the session",
+    title: "Get your video link",
     description:
-      "Complete payment through the secure link provided. Sessions are cash-pay educational coaching only.",
+      "After booking you’ll receive the private Doxy room link by email. Same room for every session.",
   },
   {
     number: "3",
-    title: "Join your private video session",
+    title: "Join your education session",
     description:
-      "Connect from any device using the private video link. You'll receive clear instructions beforehand.",
+      "Connect from any device at the scheduled time. Sessions are educational coaching only — not medical care.",
   },
 ];
 
@@ -28,7 +28,7 @@ export function HowItWorks() {
             How it works
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Simple steps from booking to your private education session.
+            Book and pay on Vagaro, then meet on a private video link.
           </p>
         </div>
 

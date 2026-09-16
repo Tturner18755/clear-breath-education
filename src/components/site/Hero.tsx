@@ -19,13 +19,17 @@ export function Hero() {
               <Button size="lg">Book an Education Session</Button>
             </a>
             <a
-              href="#how-it-works"
+              href="#pricing"
               className="text-sm font-medium text-primary underline-offset-4 hover:underline"
             >
-              See how it works →
+              See pricing →
             </a>
           </div>
-          <p className="mt-6 text-sm italic text-muted-foreground">
+          <p className="mt-6 text-sm text-muted-foreground">
+            ${site.offers.standard.price} for 60 minutes · ${site.offers.intro.price} intro
+            · 3-pack ${site.offers.pack.price}
+          </p>
+          <p className="mt-2 text-sm italic text-muted-foreground">
             Educational coaching only — not medical advice
           </p>
         </div>
@@ -34,7 +38,7 @@ export function Hero() {
           <div className="overflow-hidden rounded-2xl shadow-xl shadow-primary/10 ring-1 ring-border/50">
             <img
               src="/hero-therapist.jpg"
-              alt="Educator in scrubs teaching an older adult over a video call about respiratory care"
+              alt="Educator teaching an older adult over a video call about respiratory equipment"
               className="aspect-[4/3] w-full object-cover"
               width={800}
               height={600}
