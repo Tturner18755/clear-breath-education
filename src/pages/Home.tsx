@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { Hero } from "@/components/site/Hero";
 import { Services } from "@/components/site/Services";
+import { Pricing } from "@/components/site/Pricing";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { About } from "@/components/site/About";
 import { Disclaimer } from "@/components/site/Disclaimer";
@@ -14,6 +15,7 @@ export default function Home() {
       <main>
         <Hero />
         <Services />
+        <Pricing />
         <HowItWorks />
         <About />
         <Disclaimer />
